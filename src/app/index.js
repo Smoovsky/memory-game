@@ -31,7 +31,7 @@ const resetGame = () => {
     oFin:false,
     inProgess:false,
   });
-  const container = $('#gameContainer');
+  //const container = $('#gameContainer');
   $('div[data-type="game"],#score')? $('div[data-type="game"],#score').remove() :null;
 };
 
