@@ -37,8 +37,9 @@ const resetGame = () => {
 
 const gameCleared = ()=>{
   const container = $('#gameContainer');
+  let score = gameState.score;
   resetGame();
-  $(`<div>Congrats! You scored ${gameState.score}</div>`).css({margin:'auto auto', width:'auto',height:'100px',textAlign:'center'}).appendTo(container);
+  $(`<div>Congrats! You scored ${score}</div>`).css({margin:'auto auto', width:'auto',height:'100px',textAlign:'center'}).appendTo(container);
 };
 
 const stepClear = () => {
