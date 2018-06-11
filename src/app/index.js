@@ -16,6 +16,7 @@ const gameState = {
   zFin:false,
   oFin:false,
   inProgess:false,
+  deduction:0,
 };
 
 const resetGame = () => {
@@ -23,7 +24,7 @@ const resetGame = () => {
     clickOne: false,
     clickTwo: false,
     moves: 0,
-    score: 0,
+    score: 10,
     clicked:[],
     corrected:[],
     zFin:false,
@@ -31,13 +32,13 @@ const resetGame = () => {
     inProgess:false,
   });
   const container = $('#gameContainer');
-  $('div[data-type="game"]')? $('div[data-type="game"]').remove() :null;
+  $('div[data-type="game"],#score')? $('div[data-type="game"],#score').remove() :null;
 };
 
 const gameCleared = ()=>{
   const container = $('#gameContainer');
   resetGame();
-  $('<div>Congrats!</div>').css({margin:'auto auto',height:'100%',lineHeight:'100%'}).appendTo(container);
+  $(`<div>Congrats! You scored ${gameState.score}</div>`).css({margin:'auto auto', width:'auto',height:'100px',textAlign:'center'}).appendTo(container);
 };
 
 const stepClear = () => {
@@ -113,6 +114,9 @@ function handleClick(){
           tileAnimate(gameState.clicked[1],'wrong',cb1);
         };
         tileAnimate(target, 'flip', cb);
+        gameState.score -= Math.floor(gameState.deduction/gameState.size);
+        gameState.deduction = gameState.deduction >= gameState.size ? 0 : gameState.deduction+1;
+        $('#score').html(`Your Score: ${gameState.score}`);
       }
     }
   }
@@ -205,6 +209,7 @@ const gameEntity = (size) => {
   let width = ((size + 1) * 10 + size * 50) + 'px';
 
   const container = $('#gameContainer');
+  $(`<div id="score">Your Score: ${gameState.score}</div>`).insertBefore(container);
   container.css({width, height: width, backgroundColor:'#2979FF',color:'#fff', padding:'10px'});
 
   const board = [];
