@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "is-odd": "^3.0.1",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "timer-machine": "^1.1.0"
   }
 }
