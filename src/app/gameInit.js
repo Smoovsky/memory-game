@@ -3,6 +3,7 @@ import iconNameList from './iconNameList.js';
 
 let internalList = [...iconNameList];
 
+//function to randomly a non-repeated pick icon name from icon list.
 const iconSelect = () => {
   let index = Math.round(Math.random() * (internalList.length - 1));
   let iconName = internalList[index];
@@ -10,8 +11,11 @@ const iconSelect = () => {
   return iconName;
 };
 
+
+//final icon list used to fill the game board
 let iconList = [];
 
+//fill the icon list with randomly picked icon names
 const dispIconListGen = (size) => {
   internalList = [...iconNameList];
   size /= 2;
@@ -21,6 +25,7 @@ const dispIconListGen = (size) => {
   iconList = [...iconList, ...iconList];
 };
 
+//return a icon name from icon list
 const dispIconSelect = () => {
   let index = Math.round(Math.random() * (iconList.length - 1));
   //console.log(iconList);
