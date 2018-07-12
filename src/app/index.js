@@ -44,6 +44,7 @@ const gameCleared = ()=>{
   container.css({padding:'1px'});
   let score = gameState.score;
   container.html('');
+  container.css({padding:'0 0 5px 0', borderRadius:'0px'});
   $(`<div>Congrats!<br>You scored: ${Math.round(gameState.score/10*3)} stars<br>Time consumed: ${durationFormatter(Date.now()-currentTime)}</div>`).css({margin:'auto auto', width:'auto',height:'100px',textAlign:'center'}).appendTo(container);
   $('<div>Try Again</div>').css({border:'white solid 1px','borderRadius':'5px', cursor:'pointer', margin:'5px auto',width:'70px'}).click(gameSetup).appendTo(container);
 };
@@ -69,71 +70,74 @@ function handleClick(){
       tileAnimate(target, 'flip');
     }
     else{
-      gameState.clicked.push(target);
-      gameState.clickTwo = target.attr('icon-name');
-      if(gameState.clickOne == gameState.clickTwo){
-        //console.log((gameState.clicked)[0], gameState.clicked[1]);
-        gameState.corrected.push(gameState.clickOne);
-        gameState.moves++;
-        updateMoves(gameState.moves);
-        let cb = ()=>{
+      if(!target.is(gameState.clicked[0])){
+        gameState.clicked.push(target);
+        gameState.clickTwo = target.attr('icon-name');
+        if(gameState.clickOne == gameState.clickTwo){
+          //console.log((gameState.clicked)[0], gameState.clicked[1]);
+          gameState.corrected.push(gameState.clickOne);
+          gameState.moves++;
+          updateMoves(gameState.moves);
+          let cb = ()=>{
 
-          let cb0 = ()=>{
+            let cb0 = ()=>{
 
-            gameState.zFin = true;
-            if(gameState.oFin == true){
-              stepClear();
-              gameState.inProgess = false;
-            }
-            if(gameState.corrected.length == gameState.size*gameState.size/2){
-              gameCleared();
-            }
+              gameState.zFin = true;
+              if(gameState.oFin == true){
+                stepClear();
+                gameState.inProgess = false;
+              }
+              if(gameState.corrected.length == gameState.size*gameState.size/2){
+                gameCleared();
+              }
+            };
+            let cb1 = ()=>{
+
+              gameState.oFin = true;
+              if(gameState.zFin == true){
+                stepClear();
+                gameState.inProgess = false;
+              }
+              if(gameState.corrected.length == gameState.size*gameState.size/2){
+                gameCleared();
+              }
+            };
+
+            tileAnimate(gameState.clicked[0],'right',cb0);
+            tileAnimate(gameState.clicked[1],'right',cb1);
           };
-          let cb1 = ()=>{
+          tileAnimate(target, 'flip', cb);
+        }else{
+          gameState.moves++;
+          updateMoves(gameState.moves);
+          let cb = ()=>{
 
-            gameState.oFin = true;
-            if(gameState.zFin == true){
-              stepClear();
-              gameState.inProgess = false;
-            }
-            if(gameState.corrected.length == gameState.size*gameState.size/2){
-              gameCleared();
-            }
+            let cb0 = ()=>{
+              gameState.zFin = true;
+              if(gameState.oFin == true){
+                stepClear();
+                gameState.inProgess = false;
+              }
+            };
+            let cb1 = ()=>{
+              gameState.oFin = true;
+              if(gameState.zFin == true){
+                stepClear();
+                gameState.inProgess = false;
+              }
+            };
+            tileAnimate(gameState.clicked[0],'wrong',cb0);
+            tileAnimate(gameState.clicked[1],'wrong',cb1);
           };
-
-          tileAnimate(gameState.clicked[0],'right',cb0);
-          tileAnimate(gameState.clicked[1],'right',cb1);
-        };
-        tileAnimate(target, 'flip', cb);
-      }else{
-        gameState.moves++;
-        updateMoves(gameState.moves);
-        let cb = ()=>{
-
-          let cb0 = ()=>{
-            gameState.zFin = true;
-            if(gameState.oFin == true){
-              stepClear();
-              gameState.inProgess = false;
-            }
-          };
-          let cb1 = ()=>{
-            gameState.oFin = true;
-            if(gameState.zFin == true){
-              stepClear();
-              gameState.inProgess = false;
-            }
-          };
-          tileAnimate(gameState.clicked[0],'wrong',cb0);
-          tileAnimate(gameState.clicked[1],'wrong',cb1);
-        };
-        tileAnimate(target, 'flip', cb);
-        gameState.score -= Math.floor(gameState.deduction/gameState.size);
-        gameState.deduction = gameState.deduction >= gameState.size ? 0 : gameState.deduction+1;
-        updateScore(gameState.score);
-        //console.log(gameState.score, gameState.deduction);
-        //$('#score').html(`Your Score: ${gameState.score}`);
+          tileAnimate(target, 'flip', cb);
+          gameState.score -= Math.floor(gameState.deduction/gameState.size);
+          gameState.deduction = gameState.deduction >= gameState.size ? 0 : gameState.deduction+1;
+          updateScore(gameState.score);
+          //console.log(gameState.score, gameState.deduction);
+          //$('#score').html(`Your Score: ${gameState.score}`);
+        }
       }
+
     }
   }
 }
@@ -222,7 +226,7 @@ let currentTime = Date.now();
 const gameSetup = function(){
   resetGame();
   const container = $('#gameContainer');
-  let form = $('<form id="game-setup">Please enter the level:<br /><input /><input type="submit" value="start"></input><br />[even numder, smaller or equal to 14]</form>').appendTo(container);
+  let form = $('<form id="game-setup">Please enter the level:<br /><input size="10" style="border-radius:5px"/><input style="background-color:transparent; border:1px solid white; border-radius:2px; margin-left:5px; color:white" type="submit" value="start"></input><br /><span style="font-size:10px">[even numder, smaller or equal to 14]</span></form>').appendTo(container);
   let handleSubmit = (e) => {
     e.preventDefault();
     if(isOdd(e.target[0].value) || e.target[0].value <= 0 || e.target[0].value > 14)
@@ -233,6 +237,7 @@ const gameSetup = function(){
     $('#game-setup').remove();
     return false;
   };
+  container.css({width:'200px', color:'white', backgroundColor:'#2979FF',padding:'5px', borderRadius:'5px 5px 0 0'});
   form.submit(handleSubmit);
 };
 
